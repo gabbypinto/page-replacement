@@ -1,3 +1,5 @@
+//Katherine Hansen 2326665
+//Gabriela Pinto  2318655
 #include <queue>
 #include <unordered_set>
 #include <iostream>
@@ -138,10 +140,9 @@ int lru(char *pages[]){
                 pageTable[2]=pages[1][i]-'0';
             }
             else{//already in page frame, need to update recently used status
-               
                 if(pageTable[2]==pages[1][i]-'0')//already in the right place
                     continue;
-                else if(pageTable[1]==pages[1][i]){//needs to move one spot over
+                else if(pageTable[1]==pages[1][i]-'0'){//needs to move one spot over
                     pageTable[1]=pageTable[2];
                     pageTable[2]=pages[1][i]-'0';
                 }
