@@ -1,6 +1,5 @@
 #include <queue>
 #include <unordered_set>
-#include <unordered_map>
 #include <iostream>
 #include <cstring>
 
@@ -10,7 +9,7 @@ using namespace std;
 
 int pageTable[NUM_PAGES]; 
 int tlbIdx = 0;
-
+//FIFO replacement
 int fifo(char *pages[]){
     //a set of the current values in the page table that are easily searchable
     unordered_set<char> current;
@@ -42,6 +41,7 @@ int fifo(char *pages[]){
         
     return pageFaults;
 }
+//if page is found in page table for optimal replacement
 bool found(int page, vector<int>& pageTable){
     for(int i=0;i<pageTable.size();i++){
         if(page==pageTable[i])
@@ -49,6 +49,7 @@ bool found(int page, vector<int>& pageTable){
     }
     return false;
 }
+//if page is in pagetable for LRU replacement
 bool foundLRU(int page, int pageTable[]){
     for(int i=0;i<3;i++){
         if(page==pageTable[i])
@@ -56,6 +57,7 @@ bool foundLRU(int page, int pageTable[]){
     }
     return false;
 }
+//finding which page to delete for optimal replacement
 int toDelete(char *pages[], vector<int>& pageTable, int ind){
     int next1=-1;
     int next2=-1;
@@ -81,7 +83,7 @@ int toDelete(char *pages[], vector<int>& pageTable, int ind){
     }
     return -1;
 }
-
+//optimal page replacement
 int optimal(char *pages[]){
     vector <int> pageTable;
     int pageFaults=0;
@@ -106,14 +108,14 @@ int optimal(char *pages[]){
     }
     return pageFaults;
 }
-
+//least recently used
 int lru(char *pages[]){
     int pageFaults=0;
     int pageTable[3]={-1,-1,-1};
     for(int i =0; i<strlen(pages[1]);i+=2){
         if(foundLRU(pages[1][i], pageTable))
             continue;
-        //not found in page table, so ++ pageFaults
+        //if page table is not full yet
         if(pageTable[0]==-1){
             pageTable[0]=pages[1][i]-'0';
             pageFaults++;
@@ -126,9 +128,9 @@ int lru(char *pages[]){
             pageTable[2]=pages[1][i]-'0';
             pageFaults++;
         }
+        //if page table is already full
         else{
-            if(!foundLRU(pages[1][i]-'0', pageTable)){
-                
+            if(!foundLRU(pages[1][i]-'0', pageTable)){//if it is not already in the page table
                 pageFaults++;
                 for(int j=0;j<2;j++){
                     pageTable[j]=pageTable[j+1];
@@ -137,13 +139,13 @@ int lru(char *pages[]){
             }
             else{//already in page frame, need to update recently used status
                
-                if(pageTable[2]==pages[1][i]-'0')
+                if(pageTable[2]==pages[1][i]-'0')//already in the right place
                     continue;
-                else if(pageTable[1]==pages[1][i]){
+                else if(pageTable[1]==pages[1][i]){//needs to move one spot over
                     pageTable[1]=pageTable[2];
                     pageTable[2]=pages[1][i]-'0';
                 }
-                else{
+                else{//needs to move two spots over
                     pageTable[0]=pageTable[1];
                     pageTable[1]=pageTable[2];
                     pageTable[2]=pages[1][i]-'0';
@@ -151,13 +153,14 @@ int lru(char *pages[]){
             }
         }
     }
-    
-
     return pageFaults;
 }
 
 int main(int argc, char *argv[]){
-    //char pages[argc];
+    if(argc!=2){
+        cout <<"Incorrect number of parameters"<<endl;
+        exit(0);
+    }
 
     int numFaults=fifo(argv);
     cout<<"Number of Faults with FIFO: "<<numFaults<<endl;
@@ -167,36 +170,5 @@ int main(int argc, char *argv[]){
 
     numFaults=optimal(argv);
     cout<<"Number of Faults with Optimal Page Replacement: "<<numFaults<<endl;
-
-
-    // for(int i=0;i<strlen(argv[1])/2;i+=2){
-    //     cout<< argv[1][i];
-    // }
-    // int numFaults=fifo(argv, argc);
-    //cout << strlen(argv[1]);
-//     for(int i=0;i<sizeof(argv[1]);i++){
-//         //pages[i]=argv[1][i];
-//         cout<<argv[1][i];
-//         //cout <<pages[i];
-//     }
-    // cout<<argv[1][4];
-    // for (int i=0; i<argc;i++){
-    //     cout<<"i: "<<i<<"argv[i]"<<argv[i]<<endl;
-        
-    // }
-    // cout<<strlen(argv[1])<<endl;
-
-
-
-
-    // int count=0;
-    // for(int i=0; i<strlen(argv[1]);i+=2){
-    //     pages[count]=argv[1][i];
-    //     count++;
-    //     cout<<"argv:"<<argv[1][i]<<"\n"<< endl;
-    //     cout<<pages[count]<<"\n"<<endl;
-    // }
-
-    
 
  }
