@@ -6,7 +6,7 @@
 - Gabriela Pinto  2318655
 
 #### running instructions
-- g++ vmmpr.cpp -o vmmgr
+- g++ vmmpr.cpp -o vmmpr
 - ./vmmpr reference-string
 - reference string should be in the format 1,2,3,4,5,5,6,7 etc, with commas and no spaces
 
